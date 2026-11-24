@@ -1,0 +1,497 @@
+
+/* GENERAL RESET */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --navy: #071b49;
+    --blue: #1455d9;
+    --light-blue: #edf3ff;
+    --text: #18243b;
+    --muted: #718096;
+    --border: #e4eaf2;
+    --white: #ffffff;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f3f6fb;
+    color: var(--text);
+    line-height: 1.6;
+}
+
+
+/* HEADER */
+
+.header {
+    min-height: 95px;
+    padding: 15px 6%;
+    background: linear-gradient(110deg, #071b49, #124bc0);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    color: white;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.scooter-icon {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+.brand-text h2 {
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.brand-text p {
+    font-size: 11px;
+    color: #d8e5ff;
+    letter-spacing: .3px;
+}
+
+.unilorin-logo {
+    width: 62px;
+    height: 62px;
+    object-fit: contain;
+}
+
+
+/* MAIN LAYOUT */
+
+.page-layout {
+    width: min(1200px, 92%);
+    margin: 45px auto;
+    display: grid;
+    grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.5fr);
+    gap: 28px;
+    align-items: start;
+}
+
+
+/* INTRODUCTION PANEL */
+
+.intro {
+    background:
+        linear-gradient(160deg, rgba(5, 22, 61, .95), rgba(15, 66, 157, .88)),
+        url("https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1000&q=80");
+
+    background-size: cover;
+    background-position: center;
+    color: white;
+    border-radius: 20px;
+    min-height: 570px;
+    position: sticky;
+    top: 25px;
+    overflow: hidden;
+}
+
+.intro-content {
+    padding: 35px 28px;
+    display: flex;
+    flex-direction: column;
+    min-height: 570px;
+}
+
+.intro-label {
+    display: inline-block;
+    width: fit-content;
+    background: rgba(255, 255, 255, .14);
+    border: 1px solid rgba(255, 255, 255, .2);
+    padding: 7px 12px;
+    border-radius: 30px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 28px;
+}
+
+.intro h1 {
+    font-size: clamp(30px, 3vw, 43px);
+    line-height: 1.15;
+    letter-spacing: -1.5px;
+    max-width: 350px;
+    margin-bottom: 18px;
+}
+
+.intro-description {
+    color: #d9e5ff;
+    font-size: 14px;
+    max-width: 340px;
+}
+
+.survey-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 32px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.detail-icon {
+    font-size: 18px;
+    color: #a9c8ff;
+}
+
+.notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: rgba(255, 255, 255, .12);
+    border: 1px solid rgba(255, 255, 255, .16);
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 38px;
+}
+
+.notice-icon {
+    font-size: 18px;
+}
+
+.notice p {
+    font-size: 12px;
+    color: #e5edff;
+}
+
+.intro-footer {
+    margin-top: auto;
+    padding-top: 35px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.intro-footer span:first-child {
+    font-weight: 800;
+    letter-spacing: 2px;
+    font-size: 12px;
+}
+
+.intro-footer span:last-child {
+    color: #c3d6ff;
+    font-size: 10px;
+}
+
+
+/* SURVEY FORM */
+
+.survey-section {
+    min-width: 0;
+}
+
+.survey-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.agreement {
+    grid-column: 1 / -1;
+    background: white;
+    border: 1px solid var(--border);
+    padding: 16px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 12px;
+    color: #4a5870;
+}
+
+.agreement input {
+    width: 17px;
+    height: 17px;
+    accent-color: var(--blue);
+    cursor: pointer;
+}
+
+
+/* QUESTION CARDS */
+
+.question-card {
+    min-width: 0;
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.question-card:hover {
+    border-color: #b9cdf5;
+    box-shadow: 0 5px 20px rgba(20, 85, 217, .05);
+}
+
+.question-card legend {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    float: left;
+}
+
+.question-card legend + * {
+    clear: both;
+}
+
+.question-number {
+    width: 30px;
+    height: 30px;
+    background: var(--light-blue);
+    color: var(--blue);
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.question-heading {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.question-description {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 5px 0 16px;
+}
+
+
+/* RADIO AND CHECKBOX OPTIONS */
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: #3f4c61;
+    cursor: pointer;
+    width: fit-content;
+}
+
+.option input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--blue);
+    cursor: pointer;
+}
+
+.option:hover span {
+    color: var(--blue);
+}
+
+
+/* TEXT AREAS */
+
+textarea {
+    width: 100%;
+    min-height: 105px;
+    resize: vertical;
+    padding: 13px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    outline: none;
+    font-family: inherit;
+    font-size: 12px;
+    color: var(--text);
+    background: #fbfcff;
+}
+
+textarea::placeholder {
+    color: #a1adbd;
+}
+
+textarea:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(20, 85, 217, .08);
+}
+
+
+/* SUBMISSION */
+
+.submit-card {
+    grid-column: 1 / -1;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 25px;
+    text-align: center;
+}
+
+.submit-card h2 {
+    color: var(--navy);
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.submit-card p {
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
+.submit-card button {
+    border: none;
+    background: var(--blue);
+    color: white;
+    padding: 13px 25px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background .2s, transform .2s;
+}
+
+.submit-card button:hover {
+    background: var(--navy);
+    transform: translateY(-2px);
+}
+
+.submit-card button span {
+    margin-left: 10px;
+}
+
+
+/* TABLET */
+
+@media (max-width: 950px) {
+    .page-layout {
+        grid-template-columns: 1fr;
+        max-width: 750px;
+    }
+
+    .intro {
+        position: relative;
+        top: 0;
+        min-height: auto;
+    }
+
+    .intro-content {
+        min-height: 390px;
+    }
+
+    .intro-footer {
+        margin-top: 35px;
+    }
+}
+
+
+.other-input {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.other-input[hidden] {
+    display: none;
+}
+
+.other-input label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy);
+}
+
+.other-input input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    font-family: inherit;
+    font-size: 12px;
+}
+
+.other-input input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(20, 85, 217, .08);
+}
+
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+    .header {
+        min-height: 78px;
+        padding: 12px 5%;
+    }
+
+    .scooter-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .brand-text h2 {
+        font-size: 21px;
+    }
+
+    .brand-text p {
+        font-size: 9px;
+    }
+
+    .unilorin-logo {
+        width: 48px;
+        height: 48px;
+    }
+
+    .page-layout {
+        width: 92%;
+        margin: 22px auto;
+        gap: 20px;
+    }
+
+    .intro-content {
+        padding: 25px 22px;
+        min-height: 380px;
+    }
+
+    .intro h1 {
+        font-size: 34px;
+    }
+
+    .survey-form {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .agreement,
+    .submit-card {
+        grid-column: auto;
+    }
+
+    .question-card {
+        padding: 18px;
+    }
+}
