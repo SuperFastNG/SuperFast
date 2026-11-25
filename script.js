@@ -56,10 +56,10 @@ const submitButton = surveyForm.querySelector(
 // 4. HANDLE FORM SUBMISSION
 // ==========================================
 
+
 surveyForm.addEventListener("submit", async function (event) {
 
     event.preventDefault();
-
 
     // Validate Q2 and Q12
 
@@ -91,15 +91,11 @@ surveyForm.addEventListener("submit", async function (event) {
         }
     }
 
-
     // Collect form answers
 
     const formData = new FormData(surveyForm);
 
     const responses = {};
-
-
-    // Questions that allow multiple selections
 
     const checkboxGroups = [
         "struggles",
@@ -108,10 +104,25 @@ surveyForm.addEventListener("submit", async function (event) {
         "barriers"
     ];
 
+    // Get the Cloudflare Turnstile token
+
+    const turnstileToken = formData.get(
+        "cf-turnstile-response"
+    );
+
+    if (!turnstileToken) {
+        alert("Please complete the security verification.");
+        return;
+    }
 
     // Convert form data into an object
 
     for (const [name, value] of formData.entries()) {
+
+        // Do not save the Turnstile token as a survey answer
+        if (name === "cf-turnstile-response") {
+            continue;
+        }
 
         if (checkboxGroups.includes(name)) {
 
@@ -127,6 +138,84 @@ surveyForm.addEventListener("submit", async function (event) {
 
         }
     }
+
+    // Send responses to our Edge Function
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Submitting...";
+
+    try {
+
+        const { data, error } = await supabaseClient.functions.invoke(
+            "submit-survey",
+            {
+                body: {
+                    responses,
+                    turnstileToken
+                }
+            }
+        );
+
+        if (error) {
+            console.error("Submission failed:", error);
+            throw error;
+        }
+
+        // Successful submission
+
+        alert(
+            "Thank you! Your response has been submitted successfully."
+        );
+
+        surveyForm.reset();
+
+        // Hide the two Other input fields
+
+        document.getElementById(
+            "other-needs-container"
+        ).hidden = true;
+
+        document.getElementById(
+            "other-barrier-container"
+        ).hidden = true;
+
+        // Remove their required status
+
+        document.getElementById(
+            "other-needs-text"
+        ).required = false;
+
+        document.getElementById(
+            "other-barrier-text"
+        ).required = false;
+
+        // Reset Turnstile for the next submission
+
+        window.turnstile?.reset();
+
+    } catch (error) {
+
+        console.error("Unexpected error:", error);
+
+        alert(
+            "Unable to submit your response. Please try again."
+        );
+
+        // A Turnstile token may already have been used
+
+        window.turnstile?.reset();
+
+    } finally {
+
+        submitButton.disabled = false;
+
+        submitButton.innerHTML =
+            'Submit Survey <span>→</span>';
+
+    }
+
+});
+
 
 
     // ======================================
@@ -207,5 +296,3 @@ surveyForm.addEventListener("submit", async function (event) {
             'Submit Survey <span>→</span>';
 
     }
-
-});
