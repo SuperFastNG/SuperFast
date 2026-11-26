@@ -1,4 +1,8 @@
 
+// ==========================================
+// 1. DYNAMIC OTHER INPUTS
+// ==========================================
+
 function setupOtherInput(checkboxId, containerId, textInputId) {
     const checkbox = document.getElementById(checkboxId);
     const container = document.getElementById(containerId);
@@ -33,6 +37,8 @@ setupOtherInput(
 
 const SUPABASE_URL = "https://hgyoounjfpwtpryhszkh.supabase.co";
 
+// Keep your existing publishable key here.
+// Do not replace it with your Turnstile key.
 const SUPABASE_KEY = "sb_publishable_-d5mr7JkkQigjKuTTZJARg_XYpM-bk3";
 
 const supabaseClient = window.supabase.createClient(
@@ -53,15 +59,62 @@ const submitButton = surveyForm.querySelector(
 
 
 // ==========================================
-// 4. HANDLE FORM SUBMISSION
+// 4. THANK-YOU MESSAGE
 // ==========================================
 
+function showThankYouMessage() {
+
+    // Prevent duplicate thank-you messages
+    if (document.querySelector(".already-submitted")) {
+        return;
+    }
+
+    // Hide the survey
+    surveyForm.hidden = true;
+
+    // Create thank-you message
+    const message = document.createElement("div");
+
+    message.className = "already-submitted";
+
+    message.innerHTML = `
+        <h2>Thank You!</h2>
+
+        <p>Your response has been recorded.</p>
+
+        <p>
+            We appreciate you helping us make
+            SuperFast better for UNILORIN students.
+        </p>
+    `;
+
+    surveyForm.parentElement.insertBefore(
+        message,
+        surveyForm
+    );
+}
+
+
+// ==========================================
+// 5. CHECK PREVIOUS SUBMISSION
+// ==========================================
+
+const submissionKey = "superfast_survey_submitted";
+
+if (localStorage.getItem(submissionKey) === "true") {
+    showThankYouMessage();
+}
+
+
+// ==========================================
+// 6. HANDLE FORM SUBMISSION
+// ==========================================
 
 surveyForm.addEventListener("submit", async function (event) {
 
     event.preventDefault();
 
-    // Validate Q2 and Q12
+    // Validate checkbox groups
 
     const requiredGroups = [
         "struggles",
@@ -79,6 +132,7 @@ surveyForm.addEventListener("submit", async function (event) {
         );
 
         if (!hasSelection) {
+
             alert(
                 `Please select at least one option for ${
                     group === "struggles"
@@ -90,6 +144,7 @@ surveyForm.addEventListener("submit", async function (event) {
             return;
         }
     }
+
 
     // Collect form answers
 
@@ -104,22 +159,25 @@ surveyForm.addEventListener("submit", async function (event) {
         "barriers"
     ];
 
-    // Get the Cloudflare Turnstile token
+
+    // Get Turnstile token
 
     const turnstileToken = formData.get(
         "cf-turnstile-response"
     );
 
     if (!turnstileToken) {
+
         alert("Please complete the security verification.");
+
         return;
     }
+
 
     // Convert form data into an object
 
     for (const [name, value] of formData.entries()) {
 
-        // Do not save the Turnstile token as a survey answer
         if (name === "cf-turnstile-response") {
             continue;
         }
@@ -139,14 +197,17 @@ surveyForm.addEventListener("submit", async function (event) {
         }
     }
 
-    // Send responses to our Edge Function
+
+    // ======================================
+    // 7. SEND TO EDGE FUNCTION
+    // ======================================
 
     submitButton.disabled = true;
     submitButton.textContent = "Submitting...";
 
     try {
 
-        const { data, error } = await supabaseClient.functions.invoke(
+        const { error } = await supabaseClient.functions.invoke(
             "submit-survey",
             {
                 body: {
@@ -161,37 +222,16 @@ surveyForm.addEventListener("submit", async function (event) {
             throw error;
         }
 
-        // Successful submission
 
-        alert(
-            "Thank you! Your response has been submitted successfully."
-        );
+        // Save successful submission
 
-        surveyForm.reset();
+        localStorage.setItem(submissionKey, "true");
 
-        // Hide the two Other input fields
 
-        document.getElementById(
-            "other-needs-container"
-        ).hidden = true;
+        // Display thank-you message
 
-        document.getElementById(
-            "other-barrier-container"
-        ).hidden = true;
+        showThankYouMessage();
 
-        // Remove their required status
-
-        document.getElementById(
-            "other-needs-text"
-        ).required = false;
-
-        document.getElementById(
-            "other-barrier-text"
-        ).required = false;
-
-        // Reset Turnstile for the next submission
-
-        window.turnstile?.reset();
 
     } catch (error) {
 
@@ -200,8 +240,6 @@ surveyForm.addEventListener("submit", async function (event) {
         alert(
             "Unable to submit your response. Please try again."
         );
-
-        // A Turnstile token may already have been used
 
         window.turnstile?.reset();
 
@@ -215,84 +253,3 @@ surveyForm.addEventListener("submit", async function (event) {
     }
 
 });
-
-
-
-    // ======================================
-    // 5. SEND RESPONSES TO SUPABASE
-    // ======================================
-
-    submitButton.disabled = true;
-    submitButton.textContent = "Submitting...";
-
-    try {
-
-        const { error } = await supabaseClient
-            .from("Survey_Response")
-            .insert([
-                { responses: responses }
-            ]);
-
-
-        if (error) {
-            console.error("Submission failed:", error);
-
-            alert(
-                "Something went wrong while submitting your response. Please try again."
-            );
-
-            return;
-        }
-
-
-        // ==================================
-        // 6. SUCCESSFUL SUBMISSION
-        // ==================================
-
-        alert(
-            "Thank you! Your response has been submitted successfully."
-        );
-
-        surveyForm.reset();
-
-
-        // Hide the two Other input fields after resetting
-
-        document.getElementById(
-            "other-needs-container"
-        ).hidden = true;
-
-        document.getElementById(
-            "other-barrier-container"
-        ).hidden = true;
-
-
-        // Remove their required status
-
-        document.getElementById(
-            "other-needs-text"
-        ).required = false;
-
-        document.getElementById(
-            "other-barrier-text"
-        ).required = false;
-
-
-    } catch (error) {
-
-        console.error("Unexpected error:", error);
-
-        alert(
-            "Unable to submit your response. Please check your internet connection and try again."
-        );
-
-    } finally {
-
-        // Allow another submission
-
-        submitButton.disabled = false;
-
-        submitButton.innerHTML =
-            'Submit Survey <span>→</span>';
-
-    }

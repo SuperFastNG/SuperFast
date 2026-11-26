@@ -495,3 +495,32 @@ textarea:focus {
         padding: 18px;
     }
 }
+
+
+/* Ensure hidden elements are actually hidden */
+
+[hidden] {
+    display: none !important;
+}
+
+/* Thank-you message */
+
+.already-submitted {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+    color: #142b52;
+    max-width: 600px;
+}
+
+.already-submitted h2 {
+    font-size: 28px;
+    margin-bottom: 12px;
+}
+
+.already-submitted p {
+    line-height: 1.7;
+    margin-bottom: 8px;
+}
